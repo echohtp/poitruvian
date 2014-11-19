@@ -166,23 +166,29 @@
 		function onFrame (event){
 			if (running){
 
-				armL.rotate(armSpeedL, lArmCenter );
-				armR.rotate(armSpeedR, rArmCenter );
+				if ($('input[name="useArms"]').prop('checked')){
+					armL.rotate(armSpeedL, lArmCenter );
+					armR.rotate(armSpeedR, rArmCenter );
+					groupL.rotate(armSpeedL, 450,200);
+					groupR.rotate(armSpeedR, 550,200)
+				}
+
+				if ($('input[name="usePoi"]').prop('checked')){
 				
 				//group L
 				pTetherL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
 				pHeadL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
 
 
-				groupL.rotate(armSpeedL, 450,200);
+				
 
 				//group R
 				pTetherR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
 				pHeadR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
 
-				groupR.rotate(armSpeedR, 550,200)
+				}
 
-				console.log(pCenterL.position._x);
+				
 				
 			}
 		}
@@ -190,8 +196,7 @@
 		//DO ALL THE THINGS
 		init();
 
-		pTetherL.rotate(90, pCenterL.position._x, pCenterL.position._y);
-		pHeadL.rotate(90, pCenterL.position._x, pCenterL.position._y);
+		
 	</script>
 
 </head>
@@ -213,7 +218,7 @@
 			</div>
 			<div>
 				Poi Direction:
-					<input type="radio" name="poiDirection" value="cw" checked="checked"> None &nbsp; 
+					<input type="checkbox" name="usePoi" value="usePoi" checked="checked"> Spin Poi
 					<input type="radio" name="poiDirection" value="cw" checked="checked"> Clockwise &nbsp;
 					<input type="radio" name="poiDirection" value="ccw"> CCW
 			</div>
@@ -226,7 +231,7 @@
 
 			<div>
 				Arm Direction:
-					<input type="radio" name="armDirection" value="cw" checked="checked"> None &nbsp;  
+					<input type="checkbox" name="useArms" value="useArms" checked="checked"> Spin Arms 
 					<input type="radio" name="armDirection" value="cw"> Clockwise &nbsp;
 					<input type="radio" name="armDirection" value="ccw"> CCW
 			</div>
