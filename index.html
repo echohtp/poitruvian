@@ -14,15 +14,11 @@
 
 	#armL{
 		position:absolute;
-		left:260px;
-		top:177px;
 		display:none;
 
 	}
 	#armR{
 		position: absolute;
-		left:550px;
-		top:182px;
 		display:none;
 	}
 
@@ -41,22 +37,13 @@
 		var poiSpeedR = 4;
 		var armSpeedL = 1;
 		var armSpeedR = 1;
-		var armL;
-		var armR;
-		var pCenterL;
-		var pTetherL;
-		var pHeadL;
-		var pCenterR;
-		var pTetherR;
-		var pHeadR;
-		var lArmCenter;
-		var rArmCenter;
+
+		var armL, armR;
+		var pCenterL, pTetherL, pHeadL;
+		var pCenterR, pTetherR, pHeadR;
+		var lArmCenter, rArmCenter;
 		var lHand, rHand;
-		var groupL;
-		var groupR;
-
-
-
+		var groupL, groupR;
 
 		function init(){
 			armL = new Raster('armL');
@@ -100,7 +87,7 @@
 				center: new Point(300,350),
 				radius: 25,
 				strokeColor: 'black',
-				fillColor: 'red'
+				fillColor: 'green'
 			});
 			
 			pHeadR = new Path.Circle({
@@ -109,6 +96,8 @@
 				strokeColor: 'black',
 				fillColor: 'red'
 			});
+
+			pHeadR.blendMode = 'multiply'
 
 			groupL = new Group();
 			groupL.addChild(pCenterL);
@@ -167,6 +156,7 @@
 			if (running){
 
 				if ($('input[name="useArms"]').prop('checked')){
+					console.log(lArmCenter);					
 					armL.rotate(armSpeedL, lArmCenter );
 					armR.rotate(armSpeedR, rArmCenter );
 					groupL.rotate(armSpeedL, 450,200);
@@ -179,24 +169,16 @@
 				pTetherL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
 				pHeadL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
 
-
-				
-
 				//group R
 				pTetherR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
 				pHeadR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
 
 				}
-
-				
-				
 			}
 		}
 
 		//DO ALL THE THINGS
 		init();
-
-		
 	</script>
 
 </head>
