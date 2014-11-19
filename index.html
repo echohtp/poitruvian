@@ -1,0 +1,245 @@
+<!doctype HTML>
+<head>
+	<script type="text/javascript" src="js/paper-full.js"></script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+
+	<style>
+	.canvasBackground{
+    	position:absolute;
+    	left:200px; 
+
+	}
+
+	#armL{
+		position:absolute;
+		left:260px;
+		top:177px;
+		display:none;
+
+	}
+	#armR{
+		position: absolute;
+		left:550px;
+		top:182px;
+		display:none;
+	}
+
+	.coveringCanvas{
+ 		width:100%; 
+ 		height:100%; 
+    	position:absolute; left:0;
+
+	}
+	</style>
+
+	<script type="text/paperscript" canvas="myCanvas">
+		var running = false;
+		var moveArms = false;
+		var poiSpeedL = 4;
+		var poiSpeedR = 4;
+		var armSpeedL = 1;
+		var armSpeedR = 1;
+		var armL;
+		var armR;
+		var pCenterL;
+		var pTetherL;
+		var pHeadL;
+		var pCenterR;
+		var pTetherR;
+		var pHeadR;
+		var lArmCenter;
+		var rArmCenter;
+		var lHand, rHand;
+		var groupL;
+		var groupR;
+
+
+
+
+		function init(){
+			armL = new Raster('armL');
+			armR = new Raster('armR');
+
+			armL.position = new Point ( 353, 200);
+			armR.position = new Point ( 643	,205 );
+
+			lArmCenter = new Point ( armL.bounds._x + armL.bounds._width, armL.bounds._y + armL.bounds._height / 2  );
+			rArmCenter = new Point ( armR.bounds._x , armR.bounds._y + armR.bounds._height / 2  );
+
+			pCenterL = new Path.Circle({
+				center: new Point(300,200),
+				radius: 5,
+				strokeColor:'black',
+				fillColor: 'black'
+			});
+
+			pTetherL = new Path.Line({
+			    from: [300, 200],
+			    to: [300, 350],
+			    strokeColor: 'black'
+			});
+
+			
+
+			pCenterR = new Path.Circle({
+				center: new Point(700,200),
+				radius: 5,
+				strokeColor: 'black',
+				fillColor: 'black'
+			});
+
+			pTetherR = new Path.Line({
+			    from: [700, 200],
+			    to: [700, 350],
+			    strokeColor: 'black'
+			});
+
+			pHeadL = new Path.Circle({
+				center: new Point(300,350),
+				radius: 25,
+				strokeColor: 'black',
+				fillColor: 'red'
+			});
+			
+			pHeadR = new Path.Circle({
+				center: new Point(700,350),
+				radius: 25,
+				strokeColor: 'black',
+				fillColor: 'red'
+			});
+
+			groupL = new Group();
+			groupL.addChild(pCenterL);
+			groupL.addChild(pHeadL);
+			groupL.addChild(pTetherL);
+
+			groupR = new Group();
+			groupR.addChild(pHeadR);
+			groupR.addChild(pTetherR);
+			groupR.addChild(pCenterR);
+
+
+		}
+
+		$('#triggerButton').click(function(event){
+			(running) ? running = false : running = true;
+		});
+
+		$('#resetButton').click(function(event){
+			pCenterL.remove();
+			pCenterR.remove();			
+
+			pTetherL.remove();
+			pTetherR.remove();
+
+			pHeadL.remove();
+			pHeadR.remove();
+
+			armL.remove();
+			armR.remove();
+
+			init();
+		});
+
+
+		$("input[name=poiDirection]:radio").change(function (){ 
+			poiSpeedL = poiSpeedL * -1;
+			poiSpeedR = poiSpeedR * -1;
+		});
+
+		$("input[name=poiTiming]:radio").change(function () { 
+			poiSpeedL = poiSpeedL * -1;
+		});
+
+		$("input[name=armDirection]:radio").change(function (){ 
+			armSpeedL = armSpeedL * -1;
+			armSpeedR = armSpeedR * -1;
+		});
+
+		$("input[name=armTiming]:radio").change(function () { 
+			armSpeedL = armSpeedL * -1;
+		});
+
+
+		function onFrame (event){
+			if (running){
+
+				armL.rotate(armSpeedL, lArmCenter );
+				armR.rotate(armSpeedR, rArmCenter );
+				
+				//group L
+				pTetherL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
+				pHeadL.rotate(poiSpeedL, pCenterL.position._x, pCenterL.position._y);
+
+
+				groupL.rotate(armSpeedL, 450,200);
+
+				//group R
+				pTetherR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
+				pHeadR.rotate(poiSpeedR, pCenterR.position._x, pCenterR.position._y);
+
+				groupR.rotate(armSpeedR, 550,200)
+
+				console.log(pCenterL.position._x);
+				
+			}
+		}
+
+		//DO ALL THE THINGS
+		init();
+
+		pTetherL.rotate(90, pCenterL.position._x, pCenterL.position._y);
+		pHeadL.rotate(90, pCenterL.position._x, pCenterL.position._y);
+	</script>
+
+</head>
+
+<body>
+	<div class="container" style="height:800px;width:800px">
+		<div class="container" class="text-center">
+			<img src="vman.jpg" class="canvasBackground" />
+			<img src="armL.jpg" id="armL" />
+			<img src="armR.jpg" id="armR" />
+			<canvas id="myCanvas" class="coveringCanvas"></canvas>
+		</div>
+
+		<div class="container" style="position:absolute;top:620px;left200px;">
+			<div> 
+				<button id="triggerButton" class="btn btn-primary">Start!</button> 
+				<button id="resetButton" class="btn btn-primary">Reset!</button> 
+
+			</div>
+			<div>
+				Poi Direction:
+					<input type="radio" name="poiDirection" value="cw" checked="checked"> None &nbsp; 
+					<input type="radio" name="poiDirection" value="cw" checked="checked"> Clockwise &nbsp;
+					<input type="radio" name="poiDirection" value="ccw"> CCW
+			</div>
+			<div>
+				Poi Timing: 
+					<input type="radio" name="poiTiming" value="sameTime" checked="checked"> Same Time &nbsp;
+					<input type="radio" name="poiTiming" value="splitTime"> Split Time
+
+			</div>
+
+			<div>
+				Arm Direction:
+					<input type="radio" name="armDirection" value="cw" checked="checked"> None &nbsp;  
+					<input type="radio" name="armDirection" value="cw"> Clockwise &nbsp;
+					<input type="radio" name="armDirection" value="ccw"> CCW
+			</div>
+			<div>
+				Arm Timing: 
+					<input type="radio" name="armTiming" value="sameTime" checked="checked"> Same Time &nbsp;
+					<input type="radio" name="armTiming" value="splitTime"> Split Time
+
+			</div>
+
+		</div>
+
+	</div>
+</body>
+
+</html>
